@@ -1,0 +1,49 @@
+class Solution {
+public:
+    vector<int> cache;
+    int bt(vector<int>& nums, int mask ,  int pairsPicked ){
+        int numsArrayLength= nums.size();
+        if(2*pairsPicked == numsArrayLength ){
+            return 0;
+        }
+            if( cache[mask] !=  0){
+                return cache[mask];
+            }
+        
+        int maxScore=0;
+        
+        for(int firstIndex = 0; firstIndex<numsArrayLength;firstIndex++ ){
+            for( int secondIndex =  firstIndex+1; secondIndex < numsArrayLength ;secondIndex++){
+                if( (mask & (1 << firstIndex)) || ( mask & (1 <<  secondIndex))){
+                    continue;
+                }
+                int newMask = mask |  (1 << firstIndex) | (1 << secondIndex);
+                int score= ((pairsPicked+1) * __gcd(nums[firstIndex],nums[secondIndex]));
+                maxScore= max(maxScore, score + bt(nums, newMask, pairsPicked+1 ));
+            }
+        }
+        cache[mask]=maxScore;
+        return cache[mask];
+    }
+    int maxScore(vector<int>& nums) {
+        cache =  vector<int>(1 << 14,0);
+       
+       int ret=  bt(nums, 0, 0);
+            
+        for( int i=0;i<10;i++)
+            cout <<  cache[i] << " ";
+        return ret;
+    }
+    
+};
+
+int main(int argc, char const *argv[])
+{
+	Solution s;
+    cache =  vector<int>(1 << 14,  0);
+	vector<int> arr = {3,4,6,8};
+
+	cout <<  s.maxScore(arr)   <<  endl;
+	return 0;
+	
+}
